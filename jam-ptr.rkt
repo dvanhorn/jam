@@ -1,7 +1,10 @@
 #lang racket
 (require redex/reduction-semantics)
-(require "lang.rkt")
-(provide (all-defined-out))
+(require "util.rkt"
+	 "lang.rkt"
+	 "util/test.rkt")
+(provide (except-out (all-defined-out) test))
+(test-suite test jam-ptr)
 
 (define-metafunction JS
   ς-alloc : ς -> (n ...)
@@ -236,6 +239,38 @@
         (side-condition (not (equal? (term l_0) (term l_1)))))
    ))
 
+(test
+ (define-metafunction JS
+   close/store : e -> (eval σ* e ρ* D1 C1)
+   [(close/store e)
+    ,(let ((fv (set->list (term (fv e)))))
+       (term (eval ,(build-list (length fv) (λ (i) (list i 0)))
+		   e
+		   ,(list (map list fv (build-list (length fv) (λ (i) i))))
+		   D1
+		   C1)))])
+
+ #;
+ (define-metafunction JS
+   unload : ς* -> ς
+   [(unload (eval σ* e ρ* D* C*))  ..]
+   [(unload (cont σ* D* C* v*)) ...]
+   [(unload (appl σ* D* C* pr*)) ...]
+   [(unload (err v* σ*)) ...]
+   [(unload (val v* σ*)) ...])
+ 
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;; Property: for all expressions e, 
+ ;; - (eval σ e ρ D1 C1)  --JAM*-->* ans, or 
+ ;; - (eval σ e ρ D1 C1) --JAM*-->* ς' --JAM*--> ς'' --JAM*-->* ς'.
+ ;; where ρ,σ closes e.
+ 
+ (redex-check JS e
+	      (match (apply-reduction-relation* JAM*-step (term (close/store e)))
+                [(list) #t] ;; the program loops               
+                [(list r)   ;; the program produced an answer
+                 (redex-match JS ans r)])))
               
               
               

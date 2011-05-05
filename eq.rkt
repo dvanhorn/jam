@@ -1,6 +1,8 @@
 #lang racket
 (require redex/reduction-semantics)
-(require "lang.rkt")
+(require "util.rkt" 
+	 "lang.rkt")
+(test-suite test eq)
 
 (define-metafunction JS
   direct : ς* -> ς
@@ -23,8 +25,8 @@
   [(direct-σ* ((n v) (loc_0 v_0) ...))
    (kons (n v) (direct-σ* ((loc_0 v_0) ...)))])
 
-(redex-check JS σ*
-             (term (direct-σ* σ*)))
+(test 
+ (redex-check JS σ* (term (direct-σ* σ*))))
 
 (define-metafunction JS
   addrs : any -> any
@@ -42,18 +44,19 @@
    ((addr-subst any n_0 n_1) ...)]
   [(addr-subst any n_0 n_1) any])
 
-(redex-check JS (ς n)
-             (equal? (term ς) 
-                     (term (addr-subst ς n n))))
-
-(redex-check JS (e n)
-             (equal? (term e) 
-                     (term (addr-subst e n n))))
-
-(redex-check JS (ρ n)
-             (equal? (term ρ) 
-                     (term (addr-subst ρ n n))))
-
-(redex-check JS (v n)
-             (equal? (term v) 
-                     (term (addr-subst v n n))))
+(test
+ (redex-check JS (ς n)
+	      (equal? (term ς) 
+		      (term (addr-subst ς n n))))
+ 
+ (redex-check JS (e n)
+	      (equal? (term e) 
+		      (term (addr-subst e n n))))
+ 
+ (redex-check JS (ρ n)
+	      (equal? (term ρ) 
+		      (term (addr-subst ρ n n))))
+ 
+ (redex-check JS (v n)
+	      (equal? (term v) 
+		      (term (addr-subst v n n)))))

@@ -1,7 +1,9 @@
 #lang racket
 (require redex/reduction-semantics)
-(require "../lang.rkt")
-(provide (all-defined-out))
+(require "../util.rkt" 
+	 "../lang.rkt")
+(provide (except-out (all-defined-out) test))
+(test-suite test util)
 
 ;; Helper metafunctions
 (define-metafunction JS
@@ -34,7 +36,7 @@
   [(fv (prim op e ...))
    ,(apply set-union (set) (term ((fv e) ...)))])
 
-(redex-check JS e (term (fv e)))
+(test (redex-check JS e (term (fv e))))
   
 ;; Metafunctions for cleaning up randomly generated programs.
 (define-metafunction JS

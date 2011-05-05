@@ -1,7 +1,9 @@
 #lang racket
 (require redex/reduction-semantics)
-(require "lang.rkt")
-(provide (all-defined-out))
+(require "util.rkt" 
+	 "lang.rkt")
+(provide (except-out (all-defined-out) test))
+(test-suite test unload)
 
 (define-metafunction JS
   unload/ς : ς -> 𝓼
@@ -102,10 +104,10 @@
             (in-hole (unload/C C) 
                      (label l hole)))])
 
-(redex-check JS ς (term (unload/ς ς)))
-
-(test-equal (term (unload/ς (eval () q () D1 (C3 (C2 C1 x 1 ()) ()))))
-            (term (() (let (x (app (clos q ()))) (clos 1 ())))))
-
+(test
+ (redex-check JS ς (term (unload/ς ς)))
+ 
+ (test-equal (term (unload/ς (eval () q () D1 (C3 (C2 C1 x 1 ()) ()))))
+	     (term (() (let (x (app (clos q ()))) (clos 1 ()))))))
 
   
