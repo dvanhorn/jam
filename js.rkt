@@ -1,6 +1,6 @@
 #lang racket
-(require redex)
-(require "js-lang.rkt")
+(require redex/reduction-semantics)
+(require "lang.rkt")
 (provide (all-defined-out))
 
 (define λρJS-step

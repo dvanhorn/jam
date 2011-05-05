@@ -1,6 +1,8 @@
 #lang racket
-(require "js-machine-ptr.rkt" "js-lang.rkt" "js-test-common.rkt")
-(require redex) 
+(require redex/reduction-semantics) 
+(require "../lang.rkt" 
+	 "../jam-ptr.rkt" 
+	 "../util/test.rkt")
 
 (define-metafunction JS
   close/store : e -> (eval σ* e ρ* D1 C1)
@@ -12,6 +14,7 @@
                   D1
                   C1)))])
 
+#;
 (define-metafunction JS
   unload : ς* -> ς
   [(unload (eval σ* e ρ* D* C*))  ..]

@@ -1,6 +1,8 @@
 #lang racket
-(require "js-machine.rkt" "js-lang.rkt" "js-test-common.rkt")
-(require redex) 
+(require redex/reduction-semantics) 
+(require "../lang.rkt" 
+	 "../jam.rkt" 
+	 "../util/test.rkt")
 
 ;; Unit tests for metafunctions
 

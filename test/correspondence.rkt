@@ -1,6 +1,10 @@
 #lang racket
-(require redex)
-(require "js-lang.rkt" "js-test-common.rkt" "js-reduction.rkt" "js-machine.rkt" "unload.rkt")
+(require redex/reduction-semantics)
+(require "../lang.rkt" 
+	 "../util/test.rkt" 
+	 "../js.rkt" 
+	 "../jam.rkt" 
+	 "../unload.rkt")
 
 ;; Theorem [Correspondence]:
 ;; For all programs e, (() (e ())) --λρJS-step--> ans <==> (eval () e () D1 C1) --JAM--> ans

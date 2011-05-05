@@ -1471,5 +1471,5 @@ fun normalize4 t
 (* ************************************************************************** *)
 
 (* The remaining step is to flatten configurations.  The resulting machine is
-   in js-machine.sml. We rename refocus_closure to eval, refocus_context to
+   in jam.sml. We rename refocus_closure to eval, refocus_context to
    cont, and iterate to appl. *)

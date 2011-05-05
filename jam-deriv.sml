@@ -1,5 +1,4 @@
 (*
-
    This is a systematic derivation of a CESK machine for
    \lambda\rho_JS, a calculus of explicit substitutions for JavaScript
    based on \lambda_JS by Guha, et al, using the "Refocusing in

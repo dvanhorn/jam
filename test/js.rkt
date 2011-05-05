@@ -1,6 +1,8 @@
 #lang racket
-(require "js-reduction.rkt" "js-lang.rkt" "js-test-common.rkt")
-(require redex)
+(require redex/reduction-semantics)
+(require "../lang.rkt" 
+	 "../js.rkt" 
+	 "../util/test.rkt")
 
 (test--> λρJS-step
          (term (() (((func () 5) ()) 7)))
