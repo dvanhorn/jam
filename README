@@ -1,0 +1,4 @@
+This program gives a formal model of the JavaScript abstract machine
+and its program analysis framework.
+
+Status: incomplete.
