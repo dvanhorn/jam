@@ -1,7 +1,7 @@
 RKTS = $(wildcard *.rkt)
 OBJS = $(patsubst %.rkt,%,$(RKTS))
 
-test: test
+test:
 	for x in $(OBJS); do \
 	racket -e "(begin (require \"$$x.rkt\") ($$x))"; \
 	done
