@@ -1,9 +1,15 @@
 RKTS = $(wildcard *.rkt)
 OBJS = $(patsubst %.rkt,%,$(RKTS))
 
-test:
+testall:
 	for x in $(OBJS); do \
 	racket -e "(begin (require \"$$x.rkt\") ($$x))"; \
+	done
+
+test:
+	mkdir test
+	for x in $(OBJS); do \
+	echo "#lang racket/base (require \"../$$x.rkt\") ($$x)" > test/$$x.rkt; \
 	done
 
 runall:
