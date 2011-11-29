@@ -239,16 +239,18 @@
         (side-condition (not (equal? (term l_0) (term l_1)))))
    ))
 
+(define-metafunction JS
+  close/store : e -> (eval σ* e ρ* D1 C1)
+  [(close/store e)
+   ,(let ((fv (set->list (term (fv e)))))
+      (term (eval ,(build-list (length fv) (λ (i) (list i 0)))
+                  e
+                  ,(list (map list fv (build-list (length fv) (λ (i) i))))
+                  D1
+                  C1)))])
+
 (test
- (define-metafunction JS
-   close/store : e -> (eval σ* e ρ* D1 C1)
-   [(close/store e)
-    ,(let ((fv (set->list (term (fv e)))))
-       (term (eval ,(build-list (length fv) (λ (i) (list i 0)))
-		   e
-		   ,(list (map list fv (build-list (length fv) (λ (i) i))))
-		   D1
-		   C1)))])
+
 
  #;
  (define-metafunction JS
