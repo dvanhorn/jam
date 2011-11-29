@@ -5,7 +5,7 @@
 (define-language JS
   ;; JS
   (B true false)
-  (Q s N A B undefn null)
+  (Q S N A B undefn null)
   (A (addr N))
   (S string)
   (L string)
@@ -36,6 +36,7 @@
      ;(throw e)
      (prim OP E ...))
   
+  (en e1 e2 e3)
   (e1 ref deref throw)
   (e2 rec-ref rec-del set begin while try/finally)
   (e3 rec-set if)
@@ -50,16 +51,16 @@
   (ρ (frame ...))
   (σ ((N V) ...))
   (OP + number->string)
-  (PR (pr-app V (V ...))
-      (pr-rec-ref V V)
-      (pr-rec-set V V V)
-      (pr-rec-del V V)
-      (pr-if V E ρ E ρ)
-      (pr-op OP (V ...))
-      (pr-set V V)
-      (pr-deref V)
-      (pr-throw V)
-      (pr-break L V))
+  (PR (app V V ...)
+      (rec-ref V V)
+      (rec-set V V V)
+      (rec-del V V)
+      (if V c c)
+      (prim OP V ...)
+      (set V V)
+      (deref V)
+      (throw V)
+      (break L V))
   
   ;; State for syntactic reduction
   (𝓼 (σ c) ANS)
@@ -67,7 +68,7 @@
   ;; Closures
   (c V
      (clos E ρ)
-     (rec (s c) ...)
+     (rec (S c) ...)
      (app c c ...)
      (let (X c) (clos E ρ))
      (rec-ref c c)
@@ -90,7 +91,7 @@
   (𝓒 hole
      (let (X 𝓒) (clos E ρ))    
      (app V ... 𝓒 c ...)
-     (rec (s V) ... (s 𝓒) (s c) ...)
+     (rec (S V) ... (S 𝓒) (S c) ...)
      (rec-ref 𝓒 c)
      (rec-ref V 𝓒)
      (rec-set 𝓒 c c)
@@ -118,7 +119,7 @@
   (C mt ; Just 𝓒 with inductive occurrences replaced with k.
      (let (X k) (clos E ρ))    
      (app V ... k c ...)
-     (rec (s V) ... (s k) (s c) ...)
+     (rec (S V) ... (S k) (S c) ...)
      (rec-ref k c)
      (rec-ref V k)
      (rec-set k c c)
