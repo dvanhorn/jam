@@ -244,17 +244,6 @@
    (rec (S_0 V_0) ...)])
 
 (define-metafunction JS
-  δ : op V ... -> V
-  [(δ + N_0 N_1) ,(+ (term N_0) (term N_1))]
-  [(δ number->string N) ,(number->string (term N))])
-
-(define-metafunction JS
-  in-δ-dom? : op V ... -> #t or #f
-  [(in-δ-dom? + N_0 N_1) #t]
-  [(in-δ-dom? number->string N) #t]
-  [(in-δ-dom? op V ...) #f])
-
-(define-metafunction JS
   sto-update : σ N V -> σ
   [(sto-update ((N_0 V_0) ... (N V_1) (N_2 V_2) ...) N V)
    ((N_0 V_0) ... (N V) (N_2 V_2) ...)])

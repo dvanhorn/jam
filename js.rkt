@@ -1,7 +1,8 @@
 #lang racket
 (require redex/reduction-semantics)
 (require "util.rkt"
-	 "lang.rkt")
+	 "lang.rkt"
+         "delta.rkt")
 (provide λρJS-step)
 (test-suite test js)
 
@@ -92,19 +93,9 @@
    (==> (try/finally V c) 
         (begin c V))
    (==> (label l V) V)
-   ;; Inlined the well-defined cases in order to make testing feasible.
-   #;
    (==> (prim OP V ...)
-        (δ OP V ...)
-        (side-condition (term (in-δ-dom? OP V ...))))
-   (==> (prim + N_0 N_1)
-        (δ + N_0 N_1))
-   (==> (prim number->string N)
-        (δ number->string N))
-   (==> (prim OP V ...)
-        (throw "Bad primop")
-        (side-condition (not (term (in-δ-dom? OP V ...)))))
-      
+        (δ OP V ...))
+         
    ;; Context-sensitive, store-sensitive rules
    (~~> (σ (in-hole 𝓔 (ref V)))
         ((sto-extend N V σ) (in-hole 𝓔 (addr N)))
@@ -147,10 +138,15 @@
         (break L_1 V)
         (side-condition (not (equal? (term L_0) (term L_1)))))   
    with
-   [(--> (σ (in-hole 𝓔 PR)) (σ (A-norm (in-hole 𝓔 c_1))))
+   [(--> (σ (in-hole 𝓔 PR)) (A-norm (σ (in-hole 𝓔 c_1))))
     (==> PR c_1)]
-   [(--> 𝓼 (A-norm (σ c)))
-    (~~> 𝓼 (σ c))]))
+   [(--> 𝓼_1 (A-norm 𝓼_2))
+    (~~> 𝓼_1 𝓼_2)]))
+
+(define-metafunction JS
+  δ : OP V ... -> V
+  [(δ OP V ...)
+   ,(λJS-δ (term (OP V ...)))])
   
 
 #;
