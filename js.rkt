@@ -48,9 +48,6 @@
 (define λρJS-step
   (reduction-relation 
    JS #:domain 𝓼
-   ;; Final answer
-   (--> (σ V) (val V σ))
-   
    ;; While expansion
    (==> (clos (while E_0 E_1) ρ)
         (clos (if E_0 (begin E_1 (while E_0 e_1)) undefn) ρ))
@@ -60,7 +57,7 @@
         (env-lookup X ρ))
    (==> (let (X V) (clos E ρ))   ;; FIXME rewrite to a bind form that may or may not go through the store.
         (clos E (env-extend (X) (V) ρ)))
-   (==> (app ((func (X ..._1) E) ρ) V ..._1)
+   (==> (app (clos (func (X ..._1) E) ρ) V ..._1)
         (clos E (env-extend (X ...) (V ...) ρ)))
    (==> (app (clos (func (X ..._!_1) e) ρ) V ..._!_1)
         (throw "Arity mismatch"))
@@ -68,7 +65,7 @@
         (throw "Not a function")
         (side-condition (not (term (function? V)))))
    (==> (rec-ref (rec (S V) ...) S_0)
-        (rec-lookup ((S V) ...) S_0))   
+        (rec-lookup ((S V) ...) S_0)) 
    (==> (rec-ref V_0 V_1)
         (throw "Bad record ref")
         (side-condition (or (not (term (record? V_0)))
@@ -109,28 +106,28 @@
         (side-condition (not (term (in-δ-dom? OP V ...)))))
       
    ;; Context-sensitive, store-sensitive rules
-   (--> (σ (in-hole 𝓔 (ref V)))
+   (~~> (σ (in-hole 𝓔 (ref V)))
         ((sto-extend N V σ) (in-hole 𝓔 (addr N)))
         (where N (sto-alloc σ)))        
-   (--> (σ (in-hole 𝓔 (deref (addr N))))
+   (~~> (σ (in-hole 𝓔 (deref (addr N))))
         (σ (in-hole 𝓔 (sto-lookup σ N)))
         (side-condition (term (in-sto-dom? σ N))))
-   (--> (σ (in-hole 𝓔 (deref (addr N))))
+   (~~> (σ (in-hole 𝓔 (deref (addr N))))
         (σ (in-hole 𝓔 (throw "Null pointer")))
         (side-condition (not (term (in-sto-dom? σ N)))))   
    (==> (deref V)
         (throw "Not an address")
         (side-condition (not (term (address? V)))))   
-   (--> (σ (in-hole 𝓔 (set (addr N) V)))
+   (~~> (σ (in-hole 𝓔 (set (addr N) V)))
         ((sto-update σ N V) (in-hole 𝓔 V))
         (side-condition (term (in-sto-dom? σ N))))   
-   (--> (σ (in-hole 𝓔 (set (addr N) V)))
+   (~~> (σ (in-hole 𝓔 (set (addr N) V)))
         (σ (in-hole 𝓔 (throw "Null pointer")))
         (side-condition (not (term (in-sto-dom? σ N)))))   
    (==> (set V_0 V_1)
         (throw "Not an address")
         (side-condition (not (term (address? V_0)))))
-   (--> (σ (in-hole 𝓒 (throw V)))
+   (~~> (σ (in-hole 𝓒 (throw V)))
         (err V σ))
    (==> (try/finally (in-hole 𝓒 (throw V)) c)
         (begin c (throw V)))
@@ -138,7 +135,7 @@
         (clos E (env-extend (X) (V) ρ)))   
    (==> (label L (in-hole 𝓒 (throw V)))
         (throw V))
-   (--> (σ (in-hole 𝓒 (break L V)))
+   (~~> (σ (in-hole 𝓒 (break L V)))
         (σ (in-hole 𝓒 (throw "Unlabeled break"))))
    (==> (try/finally (in-hole 𝓒 (break L V)) c)
         (begin c (break L V)))
@@ -150,8 +147,10 @@
         (break L_1 V)
         (side-condition (not (equal? (term L_0) (term L_1)))))   
    with
-   [(--> (σ (in-hole 𝓔 c_0)) (σ (in-hole 𝓔 c_1)))
-    (==> c_0 c_1)]))
+   [(--> (σ (in-hole 𝓔 PR)) (σ (A-norm (in-hole 𝓔 c_1))))
+    (==> PR c_1)]
+   [(--> 𝓼 (A-norm (σ c)))
+    (~~> 𝓼 (σ c))]))
   
 
 #;
