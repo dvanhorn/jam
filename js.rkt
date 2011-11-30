@@ -10,54 +10,40 @@
   [(A-norm (σ V)) (val V σ)]
   [(A-norm (σ (in-hole 𝓔 PR))) (σ (in-hole 𝓔 PR))] 
   [(A-norm (σ (in-hole 𝓔 (clos (rec (S E) ...) ρ))))
-   (A-norm (σ (in-hole 𝓔 (rec (S (clos E ρ)) ...))))]
+   (A-norm (σ (in-hole 𝓔 (rec (S (clos E ρ)) ...))))]  
   [(A-norm (σ (in-hole 𝓔 (clos (let (X E_0) E_1) ρ))))
    (A-norm (σ (in-hole 𝓔 (let (X (clos E_0 ρ)) (clos E_1 ρ)))))]
   [(A-norm (σ (in-hole 𝓔 (clos (app E_0 E_1 ...) ρ))))
    (A-norm (σ (in-hole 𝓔 (app (clos E_0 ρ) (clos E_1 ρ) ...))))]
-  [(A-norm (σ (in-hole 𝓔 (clos (rec-ref E_0 E_1) ρ))))
-   (A-norm (σ (in-hole 𝓔 (rec-ref (clos E_0 ρ) (clos e_1 ρ)))))]
-  [(A-norm (σ (in-hole 𝓔 (clos (rec-set E_0 E_1 E_2) ρ))))
-   (A-norm (σ (in-hole 𝓔 (rec-set (clos E_0 ρ) (clos E_1 ρ) (clos E_2 ρ)))))]
-  [(A-norm (σ (in-hole 𝓔 (clos (rec-del E_0 E_1) ρ))))
-   (A-norm (σ (in-hole 𝓔 (rec-del (clos E_0 ρ) (clos E_1 ρ)))))]
-  [(A-norm (σ (in-hole 𝓔 (clos (set E_0 E_1) ρ))))
-   (A-norm (σ (in-hole 𝓔 (set (clos E_0 ρ) (clos E_1 ρ)))))]
-  [(A-norm (σ (in-hole 𝓔 (clos (ref E) ρ))))
-   (A-norm (σ (in-hole 𝓔 (ref (clos E ρ)))))]
-  [(A-norm (σ (in-hole 𝓔 (clos (deref E) ρ))))
-   (A-norm (σ (in-hole 𝓔 (deref (clos E ρ)))))]
-  [(A-norm (σ (in-hole 𝓔 (clos (if E_0 E_1 E_2) ρ))))
-   (A-norm (σ (in-hole 𝓔 (if (clos E_0 ρ) (clos E_1 ρ) (clos E_2 ρ)))))]
-  [(A-norm (σ (in-hole 𝓔 (clos (begin E_0 E_1) ρ))))
-   (A-norm (σ (in-hole 𝓔 (begin (clos E_0 ρ) (clos E_1 ρ)))))]
+  [(A-norm (σ (in-hole 𝓔 (clos (en E ...) ρ))))
+   (A-norm (σ (in-hole 𝓔 (en (clos E ρ) ...))))]
   [(A-norm (σ (in-hole 𝓔 (clos (label L E) ρ))))
    (A-norm (σ (in-hole 𝓔 (label L (clos E ρ)))))]
   [(A-norm (σ (in-hole 𝓔 (clos (break L E) ρ))))
    (A-norm (σ (in-hole 𝓔 (break L (clos E ρ)))))]
   [(A-norm (σ (in-hole 𝓔 (clos (try/catch E_0 X E_1) ρ))))
    (A-norm (σ (in-hole 𝓔 (try/catch (clos E_0 ρ) X (clos E_1 ρ)))))]
-  [(A-norm (σ (in-hole 𝓔 (clos (try/finally E_0 E_1) ρ))))
-   (A-norm (σ (in-hole 𝓔 (try/finally (clos E_0 ρ) (clos E_1 ρ)))))]
-  [(A-norm (σ (in-hole 𝓔 (clos (throw E) ρ))))
-   (A-norm (σ (in-hole 𝓔 (throw (clos E ρ)))))]
   [(A-norm (σ (in-hole 𝓔 (clos (prim OP E ...) ρ))))
    (A-norm (σ (in-hole 𝓔 (prim OP (clos E ρ) ...))))])
-
-(define-metafunction JS
-  sto : -> σ ;; FIXME extend for convenient sto notation.  Don't write literal stores.
-  [(sto) ()])
-
-(define-metafunction JS
-  env : -> ρ ;; FIXME extend for convenient env notation.  Don't write literal environments.
-  [(env) ()])
 
 (test
  (test-equal (term (A-norm ((sto) (clos (rec) (env))))) (term (val (rec) (sto))))
  (test-equal (term (A-norm ((sto) (clos (rec ("x" (prim + 1 2))) (env)))))
              (term ((sto) (rec ("x" (prim + (clos 1 (env)) (clos 2 (env))))))))
  (test-equal (term (A-norm ((sto) (clos (if 1 2 3) (env)))))
-             (term ((sto) (if (clos 1 (env)) (clos 2 (env)) (clos 3 (env)))))))
+             (term ((sto) (if (clos 1 (env)) (clos 2 (env)) (clos 3 (env))))))
+ (test-equal (term (A-norm ((sto) (clos (rec-ref x y) (env)))))
+             (term ((sto) (rec-ref (clos x (env)) (clos y (env))))))
+ (test-equal (term (A-norm ((sto) (clos (let (x y) z) (env)))))
+             (term ((sto) (let (x (clos y (env))) (clos z (env))))))
+ (test-equal (term (A-norm ((sto) (clos (app x y) (env)))))
+             (term ((sto) (app (clos x (env)) (clos y (env))))))
+ (test-equal (term (A-norm ((sto) (clos (label "l" x) (env)))))
+             (term ((sto) (label "l" (clos x (env))))))
+ (test-equal (term (A-norm ((sto) (clos (break "l" x) (env)))))
+             (term ((sto) (break "l" (clos x (env))))))
+ (test-equal (term (A-norm ((sto) (clos (try/catch x z y) (env)))))
+             (term ((sto) (try/catch (clos x (env)) z (clos y (env)))))))
    
 (define λρJS-step
   (reduction-relation 

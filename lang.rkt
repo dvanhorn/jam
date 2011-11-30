@@ -51,7 +51,8 @@
   (ρ (frame ...))
   (σ ((N V) ...))
   (OP + number->string)
-  (PR (app V V ...)
+  (PR (clos X ρ)
+      (app V V ...)
       (rec-ref V V)
       (rec-set V V V)
       (rec-del V V)
@@ -150,7 +151,14 @@
   
   
   )
-  
+
+(define-metafunction JS
+  sto : -> σ ;; FIXME extend for convenient sto notation.  Don't write literal stores.
+  [(sto) ()])
+
+(define-metafunction JS
+  env : -> ρ ;; FIXME extend for convenient env notation.  Don't write literal environments.
+  [(env) ()])
 
 (define-metafunction JS
   env-extend : (X ...) (V ...) ρ -> ρ
