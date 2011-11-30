@@ -39,7 +39,23 @@
   (frame ((X V) ...))
   (ρ (frame ...))
   (σ ((N V) ...))
-  (OP + number->string)
+  (OP + string-+
+      % - * / === ==
+      < string-<
+      & \| ^ ~ << >> >>>
+      to-integer to-uint-32 to-int-32
+      =
+      typeof surface-typeof
+      prim->number prim->string prim->bool
+      has-own-prop?
+      print-string
+      str-contains str-startswith str-length str-split-regexp str-split-strexp
+      regexp-quote regexp-match
+      obj-iterate-has-next? obj-iterate-next obj-iterate-key
+      obj-delete obj-can-delete?
+      math-sin math-cos math-log math-exp math-abs math-pow
+      prim?)
+      
   (PR (clos X ρ)
       (app V V ...)
       (rec-ref V V)
