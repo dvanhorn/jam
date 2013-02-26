@@ -36,9 +36,9 @@
   (ANS (err V σ)
        (val V σ))
   
-  (frame ((X V) ...))
-  (ρ (frame ...))
-  (σ ((N V) ...))
+  (σ (side-condition any_h (hash? (term any_h))))
+  (ρ (side-condition any_h (hash? (term any_h))))  
+  
   (OP + string-+
       % - * / === ==
       < string-<
@@ -156,14 +156,6 @@
   
   
   )
-
-(define-metafunction JS
-  sto : -> σ ;; FIXME extend for convenient sto notation.  Don't write literal stores.
-  [(sto) ()])
-
-(define-metafunction JS
-  env : -> ρ ;; FIXME extend for convenient env notation.  Don't write literal environments.
-  [(env) ()])
 
 (define-metafunction JS
   env-extend : (X ...) (V ...) ρ -> ρ

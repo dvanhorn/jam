@@ -145,9 +145,38 @@
 
 (define-metafunction JS
   δ : OP V ... -> V
-  [(δ OP V ...)
-   ,(λJS-δ (term (OP V ...)))])
+  [(δ OP (clos Q ρ) ...)
+   (clos ,(λJS-δ (term (OP Q ...))) (env))])
   
+
+(define-metafunction JS
+  inj : E -> 𝓼
+  [(inj E) (A-norm ((sto) (clos E (env))))])
+(define-metafunction JS
+  inj-val : E -> ANS
+  [(inj-val E) (val (clos E (env)) (sto))])
+
+(test
+ (test-->> λρJS-step
+           (term (inj 5))
+           (term (inj-val 5)))
+ (test-->> λρJS-step
+           (term (inj (prim + 3 2)))
+           (term (inj-val 5))))
+
+(define-metafunction JS
+  env : (X any) ... -> ρ
+  [(env (X any) ...)
+   ,(apply hash (apply append (term ((X any) ...))))])
+
+
+(define-metafunction JS
+  sto : (any (S ...)) ... -> σ
+  [(sto (any (S ...)) ...)
+   ,(apply hash (apply append
+                       (map (λ (k+vs) (list (first k+vs) (apply set (second k+vs))))
+                            (term ((any (S ...)) ...)))))])
+ 
 
 #;
 (test--> λρJS-step
